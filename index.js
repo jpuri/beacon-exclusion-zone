@@ -27,7 +27,7 @@ const data = [
 ];
 
 /**
- * The function calculates positions in a row where a beacon can not be present
+ * The function calculates total number of positions in a row where a beacon can not be present
  * ypos is the position of the row on y-axis
  */
 const findEmptySpots = (ypos) => {
