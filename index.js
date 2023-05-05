@@ -1,36 +1,10 @@
-// I added data here, alternatively it can be read from a file also
-const data = [
-  { sensor: { x: 3291456, y: 3143280 }, beacon: { x: 3008934, y: 2768339 } },
-  { sensor: { x: 3807352, y: 3409566 }, beacon: { x: 3730410, y: 3774311 } },
-  { sensor: { x: 1953670, y: 1674873 }, beacon: { x: 2528182, y: 2000000 } },
-  { sensor: { x: 2820269, y: 2810878 }, beacon: { x: 2796608, y: 2942369 } },
-  { sensor: { x: 3773264, y: 3992829 }, beacon: { x: 3730410, y: 3774311 } },
-  { sensor: { x: 2913793, y: 2629579 }, beacon: { x: 3008934, y: 2768339 } },
-  { sensor: { x: 1224826, y: 2484735 }, beacon: { x: 2528182, y: 2000000 } },
-  { sensor: { x: 1866102, y: 3047750 }, beacon: { x: 1809319, y: 3712572 } },
-  { sensor: { x: 3123635, y: 118421 }, beacon: { x: 1453587, y: -207584 } },
-  { sensor: { x: 2530789, y: 2254773 }, beacon: { x: 2528182, y: 2000000 } },
-  { sensor: { x: 230755, y: 3415342 }, beacon: { x: 1809319, y: 3712572 } },
-  { sensor: { x: 846048, y: 51145 }, beacon: { x: 1453587, y: -207584 } },
-  { sensor: { x: 3505756, y: 3999126 }, beacon: { x: 3730410, y: 3774311 } },
-  { sensor: { x: 2506301, y: 3745758 }, beacon: { x: 1809319, y: 3712572 } },
-  { sensor: { x: 1389843, y: 957209 }, beacon: { x: 1453587, y: -207584 } },
-  { sensor: { x: 3226352, y: 3670258 }, beacon: { x: 3730410, y: 3774311 } },
-  { sensor: { x: 3902053, y: 3680654 }, beacon: { x: 3730410, y: 3774311 } },
-  { sensor: { x: 2573020, y: 3217129 }, beacon: { x: 2796608, y: 2942369 } },
-  { sensor: { x: 3976945, y: 3871511 }, beacon: { x: 3730410, y: 3774311 } },
-  { sensor: { x: 107050, y: 209321 }, beacon: { x: 1453587, y: -207584 } },
-  { sensor: { x: 3931251, y: 1787536 }, beacon: { x: 2528182, y: 2000000 } },
-  { sensor: { x: 1637093, y: 3976664 }, beacon: { x: 1809319, y: 3712572 } },
-  { sensor: { x: 2881987, y: 1923522 }, beacon: { x: 2528182, y: 2000000 } },
-  { sensor: { x: 3059723, y: 2540501 }, beacon: { x: 3008934, y: 2768339 } },
-];
+const { readFile } = require("node:fs/promises");
 
 /**
  * The function calculates total number of positions in a row where a beacon can not be present
  * ypos is the position of the row on y-axis
  */
-const findEmptySpots = (ypos) => {
+const findEmptySpots = (data, ypos) => {
   const emptyPositionRanges = [];
 
   // The code is executed for each sensor-beacon pair to figure out empty places in a row
@@ -74,4 +48,26 @@ const findEmptySpots = (ypos) => {
   );
 };
 
-console.log(findEmptySpots(2000000));
+readFile("./input.txt", { encoding: "utf-8" }).then((result) => {
+  const rows = result.split("\n");
+  const data = rows.map((r) => {
+    const arr = r.split(":");
+    const xSensor = parseInt(
+      arr[0].substring(arr[0].indexOf("x=") + 2, arr[0].indexOf(","))
+    );
+    const ySensor = parseInt(
+      arr[0].substring(arr[0].indexOf("y=") + 2, arr[0].length)
+    );
+    const xBeacon = parseInt(
+      arr[1].substring(arr[1].indexOf("x=") + 2, arr[1].indexOf(","))
+    );
+    const yBeacon = parseInt(
+      arr[1].substring(arr[1].indexOf("y=") + 2, arr[1].length)
+    );
+    return {
+      sensor: { x: xSensor, y: ySensor },
+      beacon: { x: xBeacon, y: yBeacon },
+    };
+  });
+  console.log(findEmptySpots(data, 2000000));
+});
